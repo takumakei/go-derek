@@ -1,7 +1,10 @@
 // Package derek implements Derek Bradley's "Adaptive Thresholding using the Integral Image".
 package derek
 
-import "image"
+import (
+	"image"
+	"image/color"
+)
 
 // Process returns the image with the Derek Bradley's "Adaptive Thresholding using the Integral Image" filter applied.
 // threshold must be between [0, 100].
@@ -12,26 +15,26 @@ func Process(src image.Image, clusterSize int, threshold int) image.Image {
 		return src
 	}
 
+	gr := color.Gray16Model
 	si := make([]uint, w*h)
 	ii := make([]uint, w*h)
-	x := 0
-	for sx := bounds.Min.X; sx < bounds.Max.X; sx++ {
+	sx := bounds.Min.X
+	for x := 0; x < w; x++ {
 		var sum uint
-		y := 0
-		for sy := bounds.Min.Y; sy < bounds.Max.Y; sy++ {
-			r, g, b, _ := src.At(sx, sy).RGBA()
-			rgb := uint(r>>8 + g>>8 + b>>8)
-			i := x + y*w
-			si[i] = rgb
-			sum += rgb
-			if x == bounds.Min.X {
+		sy := bounds.Min.Y
+		for y := 0; y < h; y++ {
+			i := y*w + x
+			pxv := uint(gr.Convert(src.At(sx, sy)).(color.Gray16).Y)
+			si[i] = pxv
+			sum += pxv
+			if x == 0 {
 				ii[i] = sum
 			} else {
 				ii[i] = sum + ii[i-1]
 			}
-			y++
+			sy++
 		}
-		x++
+		sx++
 	}
 
 	clusterSize++
