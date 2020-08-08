@@ -37,6 +37,8 @@ func Process(src image.Image, clusterSize int, threshold int) image.Image {
 		sx++
 	}
 
+	threshold = min(max(threshold, 0), 100)
+	clusterSize = max(clusterSize, 0)
 	clusterSize++
 	dst := image.NewGray(image.Rect(0, 0, w, h))
 	pix := dst.Pix
