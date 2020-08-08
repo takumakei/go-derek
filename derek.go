@@ -51,8 +51,8 @@ func Process(src image.Image, clusterSize int, threshold int) image.Image {
 			y1w := y1 * w
 			y2w := y2 * w
 			sum := ii[x2+y2w] - ii[x1+y2w] - ii[x2+y1w] + ii[x1+y1w]
-			rgb := si[x+y*w]
-			if rgb*count > sum*uint(threshold)/100 {
+			pxv := si[x+y*w]
+			if pxv*count > sum*uint(threshold)/100 {
 				pix[x+y*piw] = 255
 			}
 		}
