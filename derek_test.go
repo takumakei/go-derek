@@ -4,7 +4,6 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"image"
-	"image/color"
 	_ "image/jpeg"
 	"image/png"
 	"os"
@@ -98,25 +97,7 @@ func loadImage(file string) (image.Image, error) {
 }
 
 func toGray(src image.Image) *image.Gray {
-	if g, ok := src.(*image.Gray); ok {
-		return g
-	}
-
-	b := src.Bounds()
-	gray := image.NewGray(b)
-	d := gray.Pix
-	dw := gray.Stride
-	w, h := b.Dx(), b.Dy()
-	sy := b.Min.Y
-	for y := 0; y < h; y++ {
-		sx := b.Min.X
-		for x := 0; x < w; x++ {
-			d[x+y*dw] = color.GrayModel.Convert(src.At(sx, sy)).(color.Gray).Y
-			sx++
-		}
-		sy++
-	}
-	return gray
+	return NewGray(src)
 }
 
 func savePNG(file string, img image.Image) error {
